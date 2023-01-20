@@ -28,10 +28,11 @@ light.orange <- rgb(t(col2rgb(dark.orange)), alpha = 70, max = 255)
 
 book.score.plot <- function(lit.data, book.data, 
                             HL.thisyear = data.frame(), HL.alltime = data.frame(),
-                            titles) {
+                            lab.titles) {
   
   # Summary variables
   this.year <- max(lit.data$year)
+  titles    <- lit.data %>% filter(!is.na(gender)) %>% arrange(date) %>% distinct(title) %>% pull(title)
   n.t       <- length(titles)
   
   # Set up axes
@@ -41,7 +42,7 @@ book.score.plot <- function(lit.data, book.data,
        xlab = "", ylab = "Score", cex.lab = 1.5,
        main = "")
   axis(1, at = 1:n.t,
-       labels = titles,  
+       labels = lab.titles,  
        las = 2) #padj = 1)
   axis(2, labels = TRUE, las = 1)
   box()

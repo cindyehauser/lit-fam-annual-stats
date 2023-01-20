@@ -178,7 +178,7 @@ png(filename = "plots/agreed.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
-                titles = lab.titles)
+                lab.titles = lab.titles)
 dev.off()
 
 
@@ -198,7 +198,7 @@ png(filename = "plots/controversial.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
-                titles = lab.titles)
+                lab.titles = lab.titles)
 dev.off()
 
 
@@ -216,7 +216,7 @@ png(filename = "plots/leastpopular.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
-                titles = lab.titles)
+                lab.titles = lab.titles)
 dev.off()
 
 
@@ -233,7 +233,7 @@ png(filename = "plots/mostpopular.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
-                titles = lab.titles)
+                lab.titles = lab.titles)
 dev.off()
 
 
@@ -300,7 +300,7 @@ fam.data %>% arrange(desc(mean))
 HL.thisyear      <- fam.data %>% filter(fam == HL.fam.thisyear$fam) %>% select(score = mean, index = fam.index)
 HL.alltime       <- fam.data %>% filter(fam == HL.fam.alltime$fam)  %>% select(score = mean, index = fam.index)
 # Plot scores and highlight feature people
-png(filename = "optimist.fam.png",
+png(filename = "plots/optimist.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 fam.score.plot(lit.data = lit.data, fam.data = fam.data,
                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
@@ -322,7 +322,7 @@ fam.data %>% arrange(mean)
 HL.thisyear      <- fam.data %>% filter(fam == HL.fam.thisyear$fam) %>% select(score = mean, index = fam.index)
 HL.alltime       <- fam.data %>% filter(fam == HL.fam.alltime$fam)  %>% select(score = mean, index = fam.index)
 # Plot scores and highlight feature person
-png(filename = "pessimist.fam.png",
+png(filename = "plots/pessimist.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 fam.score.plot(lit.data = lit.data, fam.data = fam.data,
                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
@@ -344,7 +344,7 @@ fam.data %>% arrange(desc(sd))
 HL.thisyear      <- lit.data %>% filter(fam == HL.fam.thisyear$fam, year == this.year) %>% select(score, index = fam.index)
 HL.alltime       <- lit.data %>% filter(fam == HL.fam.alltime$fam)                     %>% select(score, index = fam.index)
 # Plot scores and highlight feature person
-png(filename = "wildscore.fam.png",
+png(filename = "plots/wildscore.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 fam.score.plot(lit.data = lit.data, fam.data = fam.data,
                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
@@ -363,7 +363,7 @@ fam.data %>%          filter(attending >= 5) %>% filter(range == min(range))
 HL.thisyear      <- lit.data %>% filter(fam == HL.fam.thisyear$fam, year == this.year) %>% select(score, index = fam.index)
 HL.alltime       <- lit.data %>% filter(fam == HL.fam.alltime$fam)                     %>% select(score, index = fam.index)
 # Plot scores and highlight feature person
-png(filename = "stablescore.fam.png",
+png(filename = "plots/stablescore.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 fam.score.plot(lit.data = lit.data, fam.data = fam.data,
                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
@@ -379,11 +379,12 @@ dev.off()
 HL.thisyear      <- lit.data %>% filter(!is.na(gender), fam == HL.fam.thisyear$fam, year == this.year) 
 HL.alltime       <- lit.data %>% filter(!is.na(gender), fam == HL.fam.alltime$fam)                     
 # Plot scores and highlight feature person
-png(filename = "agreeable.fam.png",
+png(filename = "plots/agreeable.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data,
                 HL.thisyear = HL.thisyear %>% select(score, index = book.index), 
-                HL.alltime  = HL.alltime  %>% select(score, index = book.index))
+                HL.alltime  = HL.alltime  %>% select(score, index = book.index),
+                lab.titles = lab.titles)
 # Add in mean book scores as black points
 points(book.data$book.index, book.data$mean,
        pch = 16, col = "black")
@@ -407,11 +408,12 @@ dev.off()
 HL.thisyear      <- lit.data %>% filter(!is.na(gender), fam == HL.fam.thisyear$fam, year == this.year) 
 HL.alltime       <- lit.data %>% filter(!is.na(gender), fam == HL.fam.alltime$fam)                     
 # Plot scores and highlight feature person
-png(filename = "rebel.fam.png",
+png(filename = "plots/rebel.fam.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data,
                 HL.thisyear = HL.thisyear %>% select(score, index = book.index), 
-                HL.alltime  = HL.alltime  %>% select(score, index = book.index))
+                HL.alltime  = HL.alltime  %>% select(score, index = book.index),
+                lab.titles = lab.titles)
 # Add in mean book scores as black points
 points(book.data$book.index, book.data$mean,
        pch = 16, col = "black")
@@ -460,4 +462,4 @@ min(corr.df, na.rm = TRUE)
 which(corr.df == min(corr.df, na.rm = TRUE))
 
 # Write the correlation matrix to file, for network plotting
-write.csv(corr.df, "correlationmatrix.csv")
+write.csv(corr.df, paste0("data/correlationmatrix_", this.year, ".csv"))
