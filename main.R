@@ -1,14 +1,16 @@
 ################################################################################################################
 #
-# Lit Fam stats
+# Statistical analysis of Lit Fam book scores
 #
 ################################################################################################################
 
-setwd("C:/Users/ch0w/Dropbox/CindyMichael/LitFam/2021 summary")
+# Preamble - gather packages and associated scripts
+
+.libPaths("C:/Data/R")
 library(tidyverse)
 library(lubridate)
 
-source("lit.plots.R")
+source("scripts/lit.plots.R")
 
 ################################################################################################################
 
