@@ -16,16 +16,15 @@ source("scripts/lit.plots.R")
 
 # Set up main data set
 
-lit.data <- read.csv("LitFam_2021.csv")
-names(lit.data) <- c("fam", "date", "title", "author", "gender", "nationality", "score")
+lit.data <- read.csv("data/litfam_scores_2022.csv")
+names(lit.data) <- c("fam", "date", "year", "title", "author", "gender", "nationality", "score")
 lit.data$date <- as.Date(lit.data$date, format = "%d/%m/%Y")
-lit.data$year <- year(lit.data$date)
 
 # Unique titles, Xmas swap books removed, in order of meeting, total number of titles
 titles <- lit.data %>% filter(!is.na(gender)) %>% arrange(date) %>% distinct(title) %>% pull(title)
 n.t    <- length(titles)
 
-# Unique people's names and number of people
+# Unique participants' names and number of people
 fams   <- lit.data %>% arrange(fam) %>% distinct(fam) %>% pull(fam)
 n.f    <- length(fams)
 
