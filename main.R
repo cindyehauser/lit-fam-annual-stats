@@ -51,16 +51,19 @@ book.data <- lit.data %>%
   summarise(mean = mean(score),
             range = max(score) - min(score),
             sd = sd(score),
-            attending = n()) %>%
-  ungroup(title, book.index, author, gender, nationality)
+            attending = n(),
+            .groups = "drop")
 View(book.data)
 
+# Make label titles that are no more than 20 characters
 lab.titles    <- as.character(titles)
-lab.titles[1] <- "Little Fires Ev'where"
-lab.titles[10] <- "My Year of R & R"
-lab.titles[15] <- "Dict'y of Lost Words"
-lab.titles[17] <- "Vanishing Half"
-lab.titles[20] <- "M'stry Utmost Happiness"
+titles[nchar(titles) >= 20]
+lab.titles    <- as.character(titles)
+lab.titles[titles == "Little Fires Everywhere"]          <- "Little Fires Ev'where"
+lab.titles[titles == "My Year of Rest and Relaxation"]   <- "My Year of R & R"
+lab.titles[titles == "The Dictionary of Lost Words"]     <- "Dict'y of Lost Words"
+lab.titles[titles == "The Ministry of Utmost Happiness"] <- "M'stry Utmost Happiness"
+lab.titles[titles == "The Dangers of Smoking in Bed"]    <- "Dangers Smoking in Bed"
 
 ##############################
 ## Author gender
