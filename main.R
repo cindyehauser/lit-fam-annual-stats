@@ -56,13 +56,12 @@ book.data <- lit.data %>%
 View(book.data)
 
 # Make label titles that are no more than 20 characters
-titles[nchar(titles) >= 20]
+titles[nchar(titles) > 23]
 lab.titles    <- as.character(titles)
-lab.titles[titles == "Little Fires Everywhere"]          <- "Little Fires Ev'where"
 lab.titles[titles == "My Year of Rest and Relaxation"]   <- "My Year of R & R"
 lab.titles[titles == "The Dictionary of Lost Words"]     <- "Dict'y of Lost Words"
 lab.titles[titles == "The Ministry of Utmost Happiness"] <- "M'stry Utmost Happiness"
-lab.titles[titles == "The Dangers of Smoking in Bed"]    <- "Dangers Smoking in Bed"
+lab.titles[titles == "The Dangers of Smoking in Bed"]    <- "Dangers of Smoking in Bed"
 cbind(titles, lab.titles, nchar(lab.titles))
 
 ##############################
@@ -134,7 +133,7 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(attending, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(attending, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "mostread.book.png",
+png(filename = "plots/mostread.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 par(mar = c(12, 6, 1, 8))
 plot(0, 0, pch = NA_integer_,
@@ -175,10 +174,11 @@ book.data %>% filter(range == min(range))
 HL.thisyear      <- lit.data %>% filter(title == HL.book.thisyear$title) %>% select(score, index = book.index)
 HL.alltime       <- lit.data %>% filter(title == HL.book.alltime$title)  %>% select(score, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "agreed.book.png",
+png(filename = "plots/agreed.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
-                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
+                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
+                titles = lab.titles)
 dev.off()
 
 
@@ -194,10 +194,11 @@ book.data %>% filter(range == max(range))
 HL.thisyear       <- lit.data %>% filter(title == HL.book.thisyear$title) %>% select(score, index = book.index)
 HL.alltime        <- lit.data %>% filter(title == HL.book.alltime$title)  %>% select(score, index = book.index)
 # Plot scores and highlight feature books
-png(filename = "controversial.book.png",
+png(filename = "plots/controversial.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
-                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
+                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
+                titles = lab.titles)
 dev.off()
 
 
@@ -211,10 +212,11 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(score = mean, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(score = mean, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "leastpopular.book.png",
+png(filename = "plots/leastpopular.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
-                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
+                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
+                titles = lab.titles)
 dev.off()
 
 
@@ -227,10 +229,11 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(score = mean, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(score = mean, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "mostpopular.book.png",
+png(filename = "plots/mostpopular.book.png",
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
-                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime)
+                HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
+                titles = lab.titles)
 dev.off()
 
 
@@ -245,8 +248,8 @@ fam.data <- lit.data %>%
             median = median(score, na.rm = TRUE),
             range = max(score, na.rm = TRUE) - min(score, na.rm = TRUE),
             sd = sd(score, na.rm = TRUE),
-            attending = n()) %>%
-  ungroup()
+            attending = n(),
+            .groups = "drop")
 fam.data.thisyear <- lit.data %>%
   filter(year == this.year) %>%
   group_by(fam, fam.index) %>%
@@ -254,10 +257,9 @@ fam.data.thisyear <- lit.data %>%
             median = median(score, na.rm = TRUE),
             range = max(score, na.rm = TRUE) - min(score, na.rm = TRUE),
             sd = sd(score, na.rm = TRUE),
-            attending = n()) %>%
-  ungroup()
+            attending = n(),
+            .groups = "drop")
 
-#lab.fams <- gsub(" ", "\n", fams)
 lab.fams <- fams
 
 
