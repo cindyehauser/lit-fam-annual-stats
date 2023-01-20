@@ -56,7 +56,6 @@ book.data <- lit.data %>%
 View(book.data)
 
 # Make label titles that are no more than 20 characters
-lab.titles    <- as.character(titles)
 titles[nchar(titles) >= 20]
 lab.titles    <- as.character(titles)
 lab.titles[titles == "Little Fires Everywhere"]          <- "Little Fires Ev'where"
@@ -64,6 +63,7 @@ lab.titles[titles == "My Year of Rest and Relaxation"]   <- "My Year of R & R"
 lab.titles[titles == "The Dictionary of Lost Words"]     <- "Dict'y of Lost Words"
 lab.titles[titles == "The Ministry of Utmost Happiness"] <- "M'stry Utmost Happiness"
 lab.titles[titles == "The Dangers of Smoking in Bed"]    <- "Dangers Smoking in Bed"
+cbind(titles, lab.titles, nchar(lab.titles))
 
 ##############################
 ## Author gender
@@ -73,11 +73,11 @@ gender.year <- book.data %>%
             man = sum(gender == "man"),
             ratio = woman/(woman + man))
 
-png(filename = "gender.year.png",
+png(filename = "plots/gender.year.png",
     width = 15, height = 9, units = "cm", res = 300)
 barplot(height = t(as.matrix(gender.year[, 2:3])),
         names.arg = gender.year$year,
-        legend.text = names(gender.year)[2:3], args.legend = list(x = 1.25, y = 8, bty = "n", cex = 1.2),
+        legend.text = names(gender.year)[2:3], args.legend = list(x = 1.25, y = 8, bty = "n", cex = 1),
         col = c(light.purple, light.blue), 
         ylab = "Number of books", cex.names = 1.2)
 dev.off()
@@ -86,15 +86,15 @@ dev.off()
 ## Author nationality
 nation.year <- book.data %>%
   group_by(year, nationality) %>%
-  summarise(n = n()) %>%
+  summarise(n = n(), .groups = "drop") %>%
   pivot_wider(names_from = nationality, values_from = n, values_fill = list(n = 0))
 
-png(filename = "nation.year.png",
+png(filename = "plots/nation.year.png",
     width = 15, height = 9, units = "cm", res = 300)
 barplot(height = t(as.matrix(nation.year[, -1])),
         names.arg = nation.year$year,
         legend.text = names(nation.year[ , -1]), args.legend = list(x = 1.25, y = 10, bty = "n", cex = 0.8),
-        col = c(light.blue, light.purple, light.red, light.green, light.orange, dark.red, dark.purple), 
+        col = c(light.blue, light.purple, light.red, light.green, light.orange, dark.red, dark.purple, dark.blue), 
         ylab = "Number of books")
 dev.off()
 
@@ -104,9 +104,10 @@ score.year <- lit.data %>%
   group_by(year) %>%
   summarise(mean.score = mean(score, na.rm = TRUE),
             lwr.score = quantile(score, probs = 0.05, na.rm = TRUE),
-            upr.score = quantile(score, probs = 0.95, na.rm = TRUE))
+            upr.score = quantile(score, probs = 0.95, na.rm = TRUE),
+            .groups = "drop")
 
-png(filename = "score.year.png",
+png(filename = "plots/score.year.png",
     width = 15, height = 9, units = "cm", res = 300)
 par(mar = c(4, 5, 1, 2))
 plot(lit.data$year, lit.data$score, 
@@ -119,7 +120,7 @@ polygon(x = c(score.year$year, rev(score.year$year)),
 lines(score.year$year, score.year$mean.score,
      col = dark.blue, lwd = 2)
 legend("bottomleft", bty = "n",
-       c("All scores", "Annual mean score", "90% of scores"),
+       c("All scores", "Annual mean score", "90% of scores"), cex = 0.8,
        col = c(med.grey, dark.blue, NA), 
        pch = c(16, NA, NA), fill = c(NA, NA, light.blue), lwd = c(NA, 2, NA), border = NA)
 dev.off()

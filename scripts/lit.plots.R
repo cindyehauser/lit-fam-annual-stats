@@ -27,25 +27,12 @@ light.orange <- rgb(t(col2rgb(dark.orange)), alpha = 70, max = 255)
 ############################################################################################################
 
 book.score.plot <- function(lit.data, book.data, 
-                            HL.thisyear = data.frame(), HL.alltime = data.frame()) {
+                            HL.thisyear = data.frame(), HL.alltime = data.frame(),
+                            titles) {
   
   # Summary variables
   this.year <- max(lit.data$year)
-  titles    <- lit.data %>% filter(!is.na(gender)) %>% arrange(date) %>% distinct(title) %>% pull(title)
   n.t       <- length(titles)
-  
-  #lab.titles <- gsub(" ", "\n", titles)
-  lab.titles    <- as.character(titles)
-  lab.titles[1] <- "Little Fires Ev'where"
-  #lab.titles[5]  <- "Remains\nof the\nDay"
-  #lab.titles[8]  <- "Room\nfor a\nStranger"
-  #lab.titles[10] <- "My\nYear of\nRest &\nRelaxation"
-  #lab.titles[10] <- "My Year of Rest & Relaxation"
-  lab.titles[10] <- "My Year of R & R"
-  #lab.titles[15] <- "Dictionary\nof\nLost\nWords"
-  lab.titles[15] <- "Dict'y of Lost Words"
-  lab.titles[17] <- "Vanishing Half"
-  lab.titles[20] <- "M'stry Utmost Happiness"
   
   # Set up axes
   par(mar = c(12, 6, 1, 8))
@@ -54,7 +41,7 @@ book.score.plot <- function(lit.data, book.data,
        xlab = "", ylab = "Score", cex.lab = 1.5,
        main = "")
   axis(1, at = 1:n.t,
-       labels = lab.titles,  
+       labels = titles,  
        las = 2) #padj = 1)
   axis(2, labels = TRUE, las = 1)
   box()
