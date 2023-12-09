@@ -245,15 +245,18 @@ dev.off()
 ## Person-level calculations
 
 fam.data <- lit.data %>%
+  filter(!is.na(score)) %>%
   group_by(fam, fam.index) %>%
   summarise(mean = mean(score, na.rm = TRUE),
             median = median(score, na.rm = TRUE),
             range = max(score, na.rm = TRUE) - min(score, na.rm = TRUE),
             sd = sd(score, na.rm = TRUE),
             attending = n(),
-            .groups = "drop")
+            recent_attending = max(year),
+            .groups = "drop") %>%
+  filter(recent_attending >= this.year - 1)
 fam.data.thisyear <- lit.data %>%
-  filter(year == this.year) %>%
+  filter(year == this.year, !is.na(score)) %>%
   group_by(fam, fam.index) %>%
   summarise(mean = mean(score, na.rm = TRUE),
             median = median(score, na.rm = TRUE),
@@ -262,11 +265,11 @@ fam.data.thisyear <- lit.data %>%
             attending = n(),
             .groups = "drop")
 
-lab.fams <- fams
+lab.fams <- fam.data$fam
 
 
 # Individuals' deviations from the group mean
-lit.data <- left_join(lit.data, select(book.data, title, bk.mean = mean), by = "title") %>%
+lit.data <- left_join(lit.data, book.data %>% dplyr::select(title, bk.mean = mean), by = "title") %>%
   mutate(sq.dev = (score - bk.mean)^2)
 fam.data <- left_join(fam.data, (lit.data %>%
                                    filter(!is.na(gender)) %>%
