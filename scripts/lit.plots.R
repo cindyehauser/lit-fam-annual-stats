@@ -86,7 +86,7 @@ fam.score.plot <- function(lit.data, fam.data,
   
   # Summary variables
   this.year <- max(lit.data$year)
-  fams      <- lit.data %>% arrange(fam) %>% distinct(fam) %>% pull(fam)
+  fams      <- fam.data$fam
   n.f       <- length(fams)
   
   # Set up axes
@@ -111,14 +111,12 @@ fam.score.plot <- function(lit.data, fam.data,
   
   # If given, plot highlighted scores for this year
   if (nrow(HL.thisyear) > 0) {
-    #p.cex <- ifelse(nrow(HL.thisyear) == 1, 2, 1)
     points(HL.thisyear$index, HL.thisyear$score,
            pch = 16, col = dark.purple, cex = 2)
   }
   
   # If given, plot highlighted scores for all time
   if (nrow(HL.alltime) > 0) {
-    #p.cex <- ifelse(nrow(HL.alltime) == 1, 2, 1)
     points(HL.alltime$index, HL.alltime$score,
            pch = 16, col = dark.red, cex = 2)
   }
