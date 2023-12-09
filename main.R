@@ -6,7 +6,6 @@
 
 # Preamble - gather packages and associated scripts
 
-.libPaths("C:/Data/R")
 library(tidyverse)
 library(lubridate)
 
