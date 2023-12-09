@@ -444,8 +444,7 @@ fam.data %>% filter(attending == max(attending))
 # Table scores as title vs fam
 corr.data <- lit.data %>%
   filter(!is.na(gender)) %>%
-  filter(fam %in% (fam.data %>% filter(attending >= 7) %>% pull(fam))) %>%
-  #filter(fam %in% (fam.data.2021 %>% filter(attending >= 2) %>% pull(fam))) %>%
+  filter(fam %in% (fam.data %>% filter(attending >= 7, recent_attending == this.year) %>% pull(fam))) %>%
   select(fam, title, score) %>%
   pivot_wider(names_from = fam, values_from = score)
 
@@ -459,7 +458,9 @@ corr.df <- data.frame(corr.df, row.names = corr.fam)
 names(corr.df) <- corr.fam
 
 # Which pair have the highest agreement?
-corr.df[corr.df == 1] <- NA
+for (i in 1:nrow(corr.df)) {
+  corr.df[i, i] <- NA
+}
 max(corr.df, na.rm = TRUE)
 which(corr.df == max(corr.df, na.rm = TRUE))
 min(corr.df, na.rm = TRUE)
