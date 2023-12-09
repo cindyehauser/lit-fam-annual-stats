@@ -11,11 +11,13 @@ library(lubridate)
 
 source("scripts/lit.plots.R")
 
+file.suffix <- "2023"
+
 ################################################################################################################
 
 # Set up main data set
 
-lit.data <- read.csv("data/litfam_scores_2022.csv")
+lit.data <- read.csv("data/litfam_scores_2023.csv")
 names(lit.data) <- c("fam", "date", "year", "title", "author", "gender", "nationality", "score")
 lit.data$date <- as.Date(lit.data$date, format = "%d/%m/%Y")
 
@@ -57,10 +59,11 @@ View(book.data)
 # Make label titles that are no more than 20 characters
 titles[nchar(titles) > 23]
 lab.titles    <- as.character(titles)
-lab.titles[titles == "My Year of Rest and Relaxation"]   <- "My Year of R & R"
-lab.titles[titles == "The Dictionary of Lost Words"]     <- "Dict'y of Lost Words"
-lab.titles[titles == "The Ministry of Utmost Happiness"] <- "M'stry Utmost Happiness"
-lab.titles[titles == "The Dangers of Smoking in Bed"]    <- "Dangers of Smoking in Bed"
+lab.titles[titles == "My Year of Rest and Relaxation"]     <- "My Year of R & R"
+lab.titles[titles == "The Dictionary of Lost Words"]       <- "Dict'y of Lost Words"
+lab.titles[titles == "The Ministry of Utmost Happiness"]   <- "M'stry Utmost Happiness"
+lab.titles[titles == "The Dangers of Smoking in Bed"]      <- "Dangers of Smoking in Bed"
+lab.titles[titles == "We Have Always Lived in the Castle"] <- "We 'Lived in the Castle"
 cbind(titles, lab.titles, nchar(lab.titles))
 
 ##############################
@@ -71,11 +74,11 @@ gender.year <- book.data %>%
             man = sum(gender == "man"),
             ratio = woman/(woman + man))
 
-png(filename = "plots/gender.year.png",
+png(filename = paste0("plots/gender.year.", file.suffix, ".png"),
     width = 15, height = 9, units = "cm", res = 300)
 barplot(height = t(as.matrix(gender.year[, 2:3])),
         names.arg = gender.year$year,
-        legend.text = names(gender.year)[2:3], args.legend = list(x = 1.25, y = 8, bty = "n", cex = 1),
+        legend.text = names(gender.year)[2:3], args.legend = list(x = 1.5, y = 8.5, bty = "n", cex = 1),
         col = c(light.purple, light.blue), 
         ylab = "Number of books", cex.names = 1.2)
 dev.off()
@@ -87,11 +90,11 @@ nation.year <- book.data %>%
   summarise(n = n(), .groups = "drop") %>%
   pivot_wider(names_from = nationality, values_from = n, values_fill = list(n = 0))
 
-png(filename = "plots/nation.year.png",
+png(filename = paste0("plots/nation.year.", file.suffix, ".png"),
     width = 15, height = 9, units = "cm", res = 300)
 barplot(height = t(as.matrix(nation.year[, -1])),
         names.arg = nation.year$year,
-        legend.text = names(nation.year[ , -1]), args.legend = list(x = 1.25, y = 10, bty = "n", cex = 0.8),
+        legend.text = names(nation.year[ , -1]), args.legend = list(x = 1.5, y = 10, bty = "n", cex = 0.8),
         col = c(light.blue, light.purple, light.red, light.green, light.orange, dark.red, dark.purple, dark.blue), 
         ylab = "Number of books")
 dev.off()
@@ -105,11 +108,11 @@ score.year <- lit.data %>%
             upr.score = quantile(score, probs = 0.95, na.rm = TRUE),
             .groups = "drop")
 
-png(filename = "plots/score.year.png",
+png(filename = paste0("plots/score.year.", file.suffix, ".png"),
     width = 15, height = 9, units = "cm", res = 300)
 par(mar = c(4, 5, 1, 2))
 plot(lit.data$year, lit.data$score, 
-     xlim = c(min(lit.data$year) - 0.5, max(lit.data$year) + 0.5), ylim = c(0, 10), lab = c(4, 6, 7), las = 1,
+     xlim = c(min(lit.data$year) - 0.5, max(lit.data$year) + 0.5), ylim = c(0, 10), lab = c(4, 6, 7), las = 1, 
      xlab = "Year", ylab = "Score", cex.lab = 1.5, 
      pch = 16, col = med.grey)
 polygon(x = c(score.year$year, rev(score.year$year)),
@@ -132,7 +135,7 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(attending, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(attending, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "plots/mostread.book.png",
+png(filename = paste0("plots/mostread.book.", file.suffix, ".png"),
     width = 27, height = 14, units = "cm", res = 300)
 par(mar = c(12, 6, 1, 8))
 plot(0, 0, pch = NA_integer_,
@@ -173,7 +176,7 @@ book.data %>% filter(range == min(range))
 HL.thisyear      <- lit.data %>% filter(title == HL.book.thisyear$title) %>% select(score, index = book.index)
 HL.alltime       <- lit.data %>% filter(title == HL.book.alltime$title)  %>% select(score, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "plots/agreed.book.png",
+png(filename = paste0("plots/agreed.book.", file.suffix, ".png"),
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
@@ -193,7 +196,7 @@ book.data %>% filter(range == max(range))
 HL.thisyear       <- lit.data %>% filter(title == HL.book.thisyear$title) %>% select(score, index = book.index)
 HL.alltime        <- lit.data %>% filter(title == HL.book.alltime$title)  %>% select(score, index = book.index)
 # Plot scores and highlight feature books
-png(filename = "plots/controversial.book.png",
+png(filename = paste0("plots/controversial.book.", file.suffix, ".png"),
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
@@ -211,7 +214,7 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(score = mean, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(score = mean, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "plots/leastpopular.book.png",
+png(filename = paste0("plots/leastpopular.book.", file.suffix, ".png"),
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
@@ -228,7 +231,7 @@ dev.off()
 HL.thisyear       <- book.data %>% filter(title == HL.book.thisyear$title) %>% select(score = mean, index = book.index)
 HL.alltime        <- book.data %>% filter(title == HL.book.alltime$title)  %>% select(score = mean, index = book.index)
 # Plot scores and highlight feature book
-png(filename = "plots/mostpopular.book.png",
+png(filename = paste0("plots/mostpopular.book.", file.suffix, ".png"),
     width = 27, height = 14, units = "cm", res = 300)
 book.score.plot(lit.data = lit.data, book.data = book.data, 
                 HL.thisyear = HL.thisyear, HL.alltime = HL.alltime,
