@@ -11,14 +11,14 @@ library(lubridate)
 
 source("scripts/lit.plots.R")
 
-file.suffix <- "2023"
+file.suffix <- "2024"
 
 ################################################################################################################
 
 # Set up main data set
 
-lit.data <- read.csv("data/litfam_scores_2023.csv")
-names(lit.data) <- c("fam", "date", "year", "title", "author", "gender", "nationality", "score")
+lit.data <- read.csv(paste0("data/litfam_scores_", file.suffix, ".csv"))
+names(lit.data) <- c("fam", "date", "year", "title", "author", "gender", "nationality", "region", "score")
 lit.data$date <- as.Date(lit.data$date, format = "%d/%m/%Y")
 
 # Unique titles, Xmas swap books removed, in order of meeting, total number of titles
@@ -44,7 +44,7 @@ for (i in seq_along(titles)) {
 
 book.data <- lit.data %>%
   filter(!is.na(gender)) %>%
-  group_by(title, book.index, author, gender, nationality, year) %>%
+  group_by(title, book.index, author, gender, region, year) %>%
   summarise(mean = mean(score),
             range = max(score) - min(score),
             sd = sd(score),
@@ -52,14 +52,16 @@ book.data <- lit.data %>%
             .groups = "drop")
 View(book.data)
 
-# Make label titles that are no more than 20 characters
+# Make label titles that are no more than 23 characters
 titles[nchar(titles) > 23]
 lab.titles    <- as.character(titles)
-lab.titles[titles == "My Year of Rest and Relaxation"]     <- "My Year of R & R"
-lab.titles[titles == "The Dictionary of Lost Words"]       <- "Dict'y of Lost Words"
-lab.titles[titles == "The Ministry of Utmost Happiness"]   <- "M'stry Utmost Happiness"
-lab.titles[titles == "The Dangers of Smoking in Bed"]      <- "Dangers of Smoking in Bed"
-lab.titles[titles == "We Have Always Lived in the Castle"] <- "We 'Lived in the Castle"
+lab.titles[titles == "My Year of Rest and Relaxation"]      <- "My Year of R & R"
+lab.titles[titles == "The Dictionary of Lost Words"]        <- "Dict'y of Lost Words"
+lab.titles[titles == "The Ministry of Utmost Happiness"]    <- "M'stry Utmost Happiness"
+lab.titles[titles == "The Dangers of Smoking in Bed"]       <- "Dangers of Smoking in Bed"
+lab.titles[titles == "We Have Always Lived in the Castle"]  <- "We 'Lived in the Castle"
+lab.titles[titles == "Songs for the Dead and the Living"]   <- "Songs for Dead & Living"
+lab.titles[titles == "It Lasts Forever and Then It's Over"] <- "Lasts Forever Then Over"
 cbind(titles, lab.titles, nchar(lab.titles))
 
 ##############################
@@ -74,24 +76,24 @@ png(filename = paste0("plots/gender.year.", file.suffix, ".png"),
     width = 15, height = 9, units = "cm", res = 300)
 barplot(height = t(as.matrix(gender.year[, 2:3])),
         names.arg = gender.year$year,
-        legend.text = names(gender.year)[2:3], args.legend = list(x = 1.5, y = 8.5, bty = "n", cex = 1),
+        legend.text = names(gender.year)[2:3], args.legend = list(x = 2, y = 8.5, bty = "n", cex = 1),
         col = c(light.purple, light.blue), 
         ylab = "Number of books", cex.names = 1.2)
 dev.off()
 
 ##############################
 ## Author nationality
-nation.year <- book.data %>%
-  group_by(year, nationality) %>%
+region.year <- book.data %>%
+  group_by(year, region) %>%
   summarise(n = n(), .groups = "drop") %>%
-  pivot_wider(names_from = nationality, values_from = n, values_fill = list(n = 0))
+  pivot_wider(names_from = region, values_from = n, values_fill = list(n = 0))
 
-png(filename = paste0("plots/nation.year.", file.suffix, ".png"),
+png(filename = paste0("plots/region.year.", file.suffix, ".png"),
     width = 15, height = 9, units = "cm", res = 300)
-barplot(height = t(as.matrix(nation.year[, -1])),
-        names.arg = nation.year$year,
-        legend.text = names(nation.year[ , -1]), args.legend = list(x = 1.5, y = 10, bty = "n", cex = 0.8),
-        col = c(light.blue, light.purple, light.red, light.green, light.orange, dark.red, dark.purple, dark.blue), 
+barplot(height = t(as.matrix(region.year[, -1])),
+        names.arg = region.year$year,
+        legend.text = names(region.year[ , -1]), args.legend = list(x = 3.5, y = 10.5, bty = "n", cex = 0.8),
+        col = c(light.blue, light.purple, light.red, light.green, light.orange, dark.red), 
         ylab = "Number of books")
 dev.off()
 
@@ -153,7 +155,7 @@ points(HL.thisyear$index, HL.thisyear$attending,
        pch = 16, col = dark.purple, cex = 2)
 points(HL.alltime$index, HL.alltime$attending,
        pch = 16, col = dark.red, cex = 2)
-legend(n.t+1.5, 8, 
+legend(n.t+2, 8, 
        c(paste0("pre-", this.year), this.year, paste0(this.year, " winner"), "all-time winner"),
        col = c(med.grey, light.blue, dark.purple, dark.red),
        pch = 16, bty = "n", xpd = TRUE)

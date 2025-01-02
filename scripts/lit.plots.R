@@ -71,7 +71,7 @@ book.score.plot <- function(lit.data, book.data,
   }
   
   # Add legend to the side
-  legend(n.t+1.5, 8, 
+  legend(n.t+2, 8, 
          c(paste0("pre-", this.year), this.year, paste0(this.year, " winner"), "all-time winner"),
          col = c(med.grey, light.blue, dark.purple, dark.red),
          pch = 16, bty = "n", xpd = TRUE)
